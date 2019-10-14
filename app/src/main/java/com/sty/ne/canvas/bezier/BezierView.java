@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -20,6 +21,7 @@ import java.util.Random;
  */
 
 public class BezierView extends View {
+    private static final int DIMEN = 8; //阶数
     private Paint mPaint, mLinePointPaint;
     private Path mPath;
 
@@ -58,14 +60,18 @@ public class BezierView extends View {
         initPoint();
     }
 
+    /**
+     * 第0个点和最后一个点分别为贝塞尔曲线的起点数据点和终点数据点，其它全部为控制点（可以令t=0, t=1得出结论）
+     */
     private void initPoint() {
         mControlPoints.clear();
         Random random = new Random();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < DIMEN + 1; i++) { //N阶贝塞尔曲线有N+1个点
             int x = random.nextInt(800) + 200;
             int y = random.nextInt(800) + 200;
             PointF pointF = new PointF(x, y);
             mControlPoints.add(pointF);
+//            Log.i("sty", "x:" + x + "  y:" + y);
         }
     }
 
@@ -114,7 +120,7 @@ public class BezierView extends View {
 
     /**
      * deCasteljau算法
-     * p(i,j) = (1-t) * p(i-1,j) + t * p(i-1,j+1)
+     * p(i,j) = (1-t) * p(i-1,j) + t * p(i-1,j+1)  参考show/bezier1.png
      *
      * @param i 阶数
      * @param j 第几个点
@@ -130,7 +136,7 @@ public class BezierView extends View {
 
     /**
      * deCasteljau算法
-     * p(i,j) = (1-t) * p(i-1,j) + t * p(i-1,j+1)
+     * p(i,j) = (1-t) * p(i-1,j) + t * p(i-1,j+1)  参考show/bezier1.png
      *
      * @param i 阶数
      * @param j 第几个点
